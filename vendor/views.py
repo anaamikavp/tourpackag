@@ -11,6 +11,12 @@ from datetime import datetime
 def register(request):
     return render(request,'register_page.html')
 
+def vendor_index(request):
+    return render(request,'vendor_index.html')
+
+def package_form(request):
+    return render(request,'create_package.html')
+
 
 
 
