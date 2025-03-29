@@ -4,5 +4,5 @@ from vendor import views
 
 urlpatterns = [
     path('register/',views.register),
-
+    path('vendor_registration/', views.vendor_registration)
 ]

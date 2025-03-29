@@ -8,4 +8,8 @@ urlpatterns = [
 
     path('user_register/',views.display_user_registration),
     path('user_registration/', views.user_registration),
+    path('login/',views.display_login),
+    path('sign_in/',views.login),
+    path('vendor_home/',views.view_vendor_index)
+
 ]

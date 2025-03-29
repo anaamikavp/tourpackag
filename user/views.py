@@ -30,7 +30,7 @@ def user_registration(request):
 
         flag=0 # variable to check if the form is valid or  not
 
-        data=register_table.objects.all()    #get data from register_table from data base
+        data=register_table.objects.all()    #get data from register_table from data base , data=object
 
         #validation
         #checking email already exists or  not
@@ -61,6 +61,26 @@ def user_registration(request):
             user_data.updated_at=datetime.now()
             user_data.save()
             return render(request,'index.html')
+
+def display_login(request):
+    return render(request,'login.html')
+
+def login(request):
+    if request.method=='POST':
+        email1 = request.POST.get("email")
+        password1 = hashlib.sha1(request.POST.get("password").encode('utf-8')).hexdigest()
+        try:
+            user=register_table.objects.get(email=email1,password=password1)
+            if user.user_type=='user':
+                return render(request, 'index.html')
+            elif user.user_type=='vendor':
+                return render(request,'vendor_index.html')
+        except:
+            return render(request,'login.html',{"login_error":"Invalid Email or Password"})
+def view_vendor_index(request):
+    return render(request,'vendor_index.html')
+
+
 
 
 
