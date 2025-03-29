@@ -323,15 +323,16 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-xl-10 offset-xl-1 offset-md-6 col-md-6 mb-6">
-                            <form action="" class="user">
+                        <div class="col-xl-10 offset-xl-1  col-md-12 mb-6">
+                            <form action="/create_package/" method="post" class="user" enctype="multipart/form-data">
+                                {% csrf_token %}
                                 <fieldset>
                                     <div class="form-group row">
-                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <div class="col-lg-6 col-sm-6 mb-3 mb-sm-0">
                                             <label for="" class="required">Package Name</label>
                                             <input type="text" class="form-control " id="package_name" required name="package_name">
                                         </div>
-                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <div class="col-sm-6 col-lg-6 mb-3 mb-sm-0">
                                             <label for="" class="required">Destination</label>
                                             <input type="text" class="form-control " id="destination" required name="destination">
                                         </div>
@@ -358,18 +359,18 @@
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <label for="" class="required">Start Date</label>
+                                            <label for="" class="required">Start Date</label><span class="text-danger">{{starterror}}</span>
                                             <input type="date" class="form-control " id="start_date" required name="start_date">
                                         </div>
                                         <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <label for="" class="required">End Date</label>
+                                            <label for="" class="required">End Date</label><span class="text-danger">{{enderror}}</span>
                                             <input type="date" class="form-control " id="end_date" required name="end_date">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         
                                         <div class="col-sm-2">
-                                            <button type="button" 
+                                            <button type="submit"
                                             class="btn btn-success font-weight-bolder btn-user btn-block" name="submit"
                                             >
                                                 Submit

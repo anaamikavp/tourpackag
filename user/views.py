@@ -71,6 +71,7 @@ def login(request):
         password1 = hashlib.sha1(request.POST.get("password").encode('utf-8')).hexdigest()
         try:
             user=register_table.objects.get(email=email1,password=password1)
+            request.session['userid']=user.id
             if user.user_type=='user':
                 return render(request, 'index.html')
             elif user.user_type=='vendor':

@@ -15,7 +15,7 @@ class package_table(models.Model):
     description=models.CharField( max_length=150)
     start_date=models.DateField()
     end_date=models.DateField()
-    images=models.FileField()
+    images=models.ImageField(upload_to='images/')
     status=models.CharField(max_length=20)
     vendor_id=models.ForeignKey(register_table,on_delete=models.SET_DEFAULT,default=1)
 

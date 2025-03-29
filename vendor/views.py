@@ -3,6 +3,7 @@ import hashlib
 from django.shortcuts import render
 
 from user.models import register_table
+from vendor.models import package_table
 from datetime import datetime
 
 
@@ -68,6 +69,64 @@ def vendor_registration(request):
             vendor_data.updated_at=datetime.now()
             vendor_data.save()
             return render(request,'index.html')
+
+def package_creation(request):
+    if request.method=="POST":
+
+        #get data from form
+        p_name=request.POST.get("package_name")
+        dstnation=request.POST.get("destination")
+        duration=request.POST.get("duration")
+        price=request.POST.get("price")
+        description=request.POST.get("description")
+        image= request.FILES.get("image")
+        startdate= request.POST.get("start_date")
+        enddate= request.POST.get("end_date")
+
+
+    #variables to pass errors
+        startdate_error=""
+        enddate_error=""
+
+
+        flag=0 # variable to check if the form is valid or  not
+
+
+
+        #validation
+        #checking email already exists or  not
+
+        date_format = "%Y-%m-%d"  # The format of the date string
+        sdate_str_obj = datetime.strptime(startdate, date_format)
+        edate_str_obj = datetime.strptime(enddate, date_format)
+        if sdate_str_obj<=datetime.now():
+            startdate_error="start date should be a future date"
+            flag=1
+
+        if edate_str_obj<sdate_str_obj:
+            enddate_error="end date should be after start date"
+            flag=1
+
+        if flag==1:
+            return render(request,'create_package.html',{"starterror":startdate_error, "enderror":enddate_error})
+        else:
+        #object for register_table
+            package_data=package_table()
+            package_data.package_name=p_name
+            package_data.destination=dstnation
+            package_data.duration=duration
+            package_data.price=price
+            package_data.created_at=datetime.now()
+            package_data.updated_at=datetime.now()
+            package_data.description=description
+            package_data.images=image
+            package_data.start_date=startdate
+            package_data.end_date=enddate
+            package_data.status='created'
+            vendor_data=register_table.objects.get(id=request.session['userid'])
+            package_data.vendor_id=vendor_data
+            package_data.save()
+            return render(request,'create_package.html',{'success':'Package created successfully'})
 
 
 
