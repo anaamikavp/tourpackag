@@ -35,7 +35,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Vendor</div>
+                <div class="sidebar-brand-text mx-3">Admin</div>
             </a>
 
             <!-- Divider -->
@@ -43,7 +43,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="/vendor_index/">
+                <a class="nav-link" href="/admin_index/">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -55,17 +55,9 @@
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Packages</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="/package_form/">Create</a>
-                        <a class="collapse-item" href="/view_package/">View</a>
-                    </div>
-                </div>
+                <a class="nav-link" href="/packages/">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Packages</span></a>
             </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
@@ -73,15 +65,16 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-
-
-
-
             <!-- Nav Item - Tables -->
             <li class="nav-item">
-                <a class="nav-link" href="/bookings/">
+                <a class="nav-link" href="/view_bookings/">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Bookings</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/view_vendors/">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Vendors</span></a>
             </li>
 
             <!-- Divider -->
@@ -159,35 +152,26 @@
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">View Packages</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">{{ pdata.package_name }}</h6>
                         </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>Package Name</th>
-                                            <th>Destination</th>
-                                            <th>Duration</th>
-                                            <th>Price</th>
-                                            <th>Status</th>
-                                            <th>Edit</th>
-                                        </tr>
-                                    </thead>
-                                    
-                                    <tbody>
-                                        {% for data in pdata %}
-                                        <tr>
-                                            <td>{{data.package_name}}</td>
-                                            <td>{{data.destination}}</td>
-                                            <td>{{data.duration}}</td>
-                                            <td>{{data.price}}</td>
-                                            <td>{{data.status}}</td>
-                                            <td><a href="/edit_package/{{data.id}}"><i class="fas fa-edit"></i></a></td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                        <div class="card-body d-flex">
+                            <img src="{{ pdata.images.url }}" width="500px">
+                            <div class="ms-3">
+                                <h2 class="px-4 text-dark fw-bold">{{ pdata.package_name }}</h2>
+                                <p class="px-4">Destination : {{ pdata.destination }}</p>
+                                <p class="px-4">Description : {{ pdata.description }}</p>
+                                <p class="px-4">Duration : {{ pdata.duration }}</p>
+                                <p class="px-4">Price : {{ pdata.price }}</p>
+                                <p class="px-4">Start Date : {{ pdata.start_date }}</p>
+                                <p class="px-4">End Date : {{ pdata.end_date }}</p>
+                                {% if pdata.status == 'created' %}
+                                <a href="/approve_package/{{ pdata.id }}" class="ml-4 btn btn-success">Approve</a>
+                                <a href="/reject_package/{{ pdata.id }}" class="btn btn-danger">Reject</a>
+                                {% elif pdata.status == 'approved' %}
+                                <i class="fa-solid fa-circle-check bg-success"></i> <span class="text-success fw-bold px-4" style="font-weight: bold;"> Approved</span>
+                                {% else %}
+                                <span class="text-danger fw-bold px-4" style="font-weight: bold;"> Rejected</span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

@@ -3,7 +3,9 @@ import hashlib
 from django.shortcuts import render
 
 from user.models import register_table
+from vendor.models import package_table
 from datetime import datetime
+from django.utils import timezone
 
 
 def display_index(request):
@@ -11,6 +13,10 @@ def display_index(request):
 
 def display_user_registration(request):
     return render(request,'register.html')
+
+def display_packages(request):
+    package_data = package_table.objects.filter(start_date__gt= timezone.now(),status='approved')
+    return render(request,'packages.html', {'pdata': package_data})
 
 
 def user_registration(request):
@@ -72,10 +78,13 @@ def login(request):
         try:
             user=register_table.objects.get(email=email1,password=password1)
             request.session['userid']=user.id
+            request.session['name']=f'{user.firstname} {user.lastname}'
             if user.user_type=='user':
                 return render(request, 'index.html')
             elif user.user_type=='vendor':
                 return render(request,'vendor_index.html')
+            elif user.user_type=='admin':
+                return render(request,'admin_index.html')
         except:
             return render(request,'login.html',{"login_error":"Invalid Email or Password"})
 def view_vendor_index(request):
