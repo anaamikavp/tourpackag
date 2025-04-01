@@ -1,9 +1,9 @@
 import hashlib
 
 from django.shortcuts import render
-
+from django.db.models import Sum
 from user.models import register_table
-from vendor.models import package_table
+from vendor.models import booking_table, package_table
 from datetime import datetime
 
 
@@ -13,7 +13,17 @@ def register(request):
     return render(request,'register_page.html')
 
 def vendor_index(request):
-    return render(request,'vendor_index.html')
+    package_data = package_table.objects.filter(vendor_id = request.session['userid'])
+    no_packages = package_data.count()  # Get total number of packages
+    no_bookings = 0  # Initialize booking count
+    total_earnings = 0  # Initialize earnings
+
+    # Get all bookings related to the vendor's packages
+    bookings = booking_table.objects.filter(package_id__in=package_data.values_list('id', flat=True), booking_status='booked')
+
+    no_bookings = bookings.count()  # Get total number of bookings
+    total_earnings = bookings.aggregate(Sum('price'))['price__sum'] or 0
+    return render(request,'vendor_index.html',{'no_packages':no_packages,'no_bookings':no_bookings, 'earnings':total_earnings})
 
 def package_form(request):
     return render(request,'create_package.html')
@@ -193,8 +203,12 @@ def package_updation(request,id):
             package_data.status='created'
             vendor_data=register_table.objects.get(id=request.session['userid'])
             package_data.vendor_id=vendor_data
+            package_data.updated_at = datetime.now()
             package_data.save()
             return render(request,'create_package.html',{'success':'Package updated successfully'})
 
 
 
+def bookings(request):
+    bookings = booking_table.objects.filter(booking_status='booked')
+    return render(request,'bookings.html', {'bookings': bookings})

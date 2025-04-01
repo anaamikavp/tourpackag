@@ -10,7 +10,12 @@ urlpatterns = [
     path('user_registration/', views.user_registration),
     path('login/',views.display_login),
     path('sign_in/',views.login),
-    path('vendor_home/',views.view_vendor_index),
     path('show_packages/',views.display_packages),
+    path('booking_form/',views.booking_form),
+    path('booking/',views.booking),
+    path('payment/',views.payment_page),
+    path('transaction/<int:id>',views.transaction),
+    path('logout/',views.logout_view),
+    path('package_readmore/<int:id>',views.package_readmore)
 
 ]

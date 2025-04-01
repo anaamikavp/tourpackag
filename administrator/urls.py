@@ -8,4 +8,6 @@ urlpatterns = [
     path('package_details/<int:id>', views.package_details),
     path('approve_package/<int:id>', views.approve_package),
     path('reject_package/<int:id>', views.reject_package),
+    path('view_bookings/', views.view_bookings),
+    path('view_vendors/', views.view_vendors),
 ]

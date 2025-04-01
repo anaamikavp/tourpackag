@@ -1,9 +1,9 @@
 import hashlib
-
-from django.shortcuts import render
-
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from django.contrib.auth import logout
 from user.models import register_table
-from vendor.models import package_table
+from vendor.models import booking_table, package_table
 from datetime import datetime
 from django.utils import timezone
 
@@ -17,6 +17,10 @@ def display_user_registration(request):
 def display_packages(request):
     package_data = package_table.objects.filter(start_date__gt= timezone.now(),status='approved')
     return render(request,'packages.html', {'pdata': package_data})
+
+def booking_form(request):
+    package_data = package_table.objects.filter(start_date__gt= timezone.now(),status='approved')
+    return render(request,'booking.html', {'pdata': package_data})
 
 
 def user_registration(request):
@@ -82,13 +86,64 @@ def login(request):
             if user.user_type=='user':
                 return render(request, 'index.html')
             elif user.user_type=='vendor':
-                return render(request,'vendor_index.html')
+                return redirect('/vendor_index/')
             elif user.user_type=='admin':
                 return render(request,'admin_index.html')
         except:
             return render(request,'login.html',{"login_error":"Invalid Email or Password"})
-def view_vendor_index(request):
-    return render(request,'vendor_index.html')
+        
+def payment_page(request):
+    return render(request,'payment.html')
+
+
+def booking(request):
+    if request.method == 'POST':
+        #get data from form
+        name=request.POST.get("name")
+        email=request.POST.get("email")
+        phone=request.POST.get("phone")
+        package_id=request.POST.get("package")
+        no_of_persons = request.POST.get("no_of_persons")
+
+        package_data = package_table.objects.get(id=package_id)
+        user_id = register_table.objects.get(id=request.session['userid'])
+
+        price = float(no_of_persons) * float(package_data.price)
+
+        booking = booking_table()
+        booking.name = name
+        booking.email = email
+        booking.phone = phone
+        booking.no_of_persons = no_of_persons
+        booking.package_id = package_data
+        booking.price = price
+        booking.payment_status = 'pending'
+        booking.created_at=datetime.now()
+        booking.updated_at=datetime.now()
+        booking.user_id = user_id
+        booking.booking_status = 'pending'
+        booking.save()
+
+        return render(request,'payment.html',{'booking': booking})
+
+def transaction(request, id):
+    if request.method == 'POST':
+        booking = booking_table.objects.get(id=id)
+        booking.payment_status = 'success'
+        booking.booking_status = 'booked'
+        booking.updated_at = datetime.now()
+        booking.save()
+        return HttpResponse("<h2>Booking Successfull</h2>")
+
+
+def logout_view(request):
+    logout(request)  # Logs out the user
+    request.session.flush()  # Clears the session data
+    return redirect('/')
+
+def package_readmore(request,id):
+    package_data = package_table.objects.get(id=id)
+    return render(request,'package_detail_view.html',{'pdata':package_data})
 
 
 
@@ -96,10 +151,3 @@ def view_vendor_index(request):
 
 
 
-
-
-
-
-
-
-# Create your views here.

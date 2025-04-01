@@ -11,4 +11,5 @@ urlpatterns = [
     path('view_package/',views.package_view),
     path('edit_package/<int:id>',views.package_edit),
     path('update_package/<int:id>',views.package_updation),
+    path('bookings/',views.bookings),
 ]

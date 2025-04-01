@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class register_table(models.Model):
     #id will be created automatically

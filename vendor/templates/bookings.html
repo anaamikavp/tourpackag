@@ -185,91 +185,41 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Create a Package</h1>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-xl-10 offset-xl-1  col-md-12 mb-6">
-                            {% if success %}
-                            <div class="popup-container">
-                                <div class="popup success-popup">
-                                  <div class="popup-icon success-icon">
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 24 24"
-                                      class="success-svg"
-                                    >
-                                      <path
-                                        fill-rule="evenodd"
-                                        d="m12 1c-6.075 0-11 4.925-11 11s4.925 11 11 11 11-4.925 11-11-4.925-11-11-11zm4.768 9.14c.0878-.1004.1546-.21726.1966-.34383.0419-.12657.0581-.26026.0477-.39319-.0105-.13293-.0475-.26242-.1087-.38085-.0613-.11844-.1456-.22342-.2481-.30879-.1024-.08536-.2209-.14938-.3484-.18828s-.2616-.0519-.3942-.03823c-.1327.01366-.2612.05372-.3782.1178-.1169.06409-.2198.15091-.3027.25537l-4.3 5.159-2.225-2.226c-.1886-.1822-.4412-.283-.7034-.2807s-.51301.1075-.69842.2929-.29058.4362-.29285.6984c-.00228.2622.09851.5148.28067.7034l3 3c.0983.0982.2159.1748.3454.2251.1295.0502.2681.0729.4069.0665.1387-.0063.2747-.0414.3991-.1032.1244-.0617.2347-.1487.3236-.2554z"
-                                        clip-rule="evenodd"
-                                      ></path>
-                                    </svg>
-                                  </div>
-                                  <div class="success-message">{{success}}</div>
-                                  
-                                </div>
-                                {% endif %}
-                            <form action="/update_package/{{pdata.id}}" method="post" class="user" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <fieldset>
-                                    <div class="form-group row">
-                                        <div class="col-lg-6 col-sm-6 mb-3 mb-sm-0">
-                                            <label for="" class="required">Package Name</label>
-                                            <input type="text" class="form-control " id="package_name" value="{{pdata.package_name}}" required name="package_name">
-                                        </div>
-                                        <div class="col-sm-6 col-lg-6 mb-3 mb-sm-0">
-                                            <label for="" class="required">Destination</label>
-                                            <input type="text" class="form-control " id="destination" value="{{pdata.destination}}" required name="destination">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <label for="" class="required">Duration</label>
-                                            <input type="number" class="form-control " id="duration" required name="duration" value="{{pdata.duration}}" onchange="calculateEndDate()">
-                                        </div>
-                                        <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <label for="" class="required">Price</label>
-                                            <input type="number" class="form-control " id="price" value="{{pdata.price}}" required name="price">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <label for="" class="required">Description</label>
-                                            <textarea class="form-control" name="description" >{{pdata.description}}</textarea>
-                                        </div>
-                                        <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <label for="" class="required">Image</label>
-                                            <input type="file" class="form-control" id="image" value="{{pdata.images}}" required name="image">
-                                            <img id="imagePreview" src="{{ pdata.images.url }}" alt="{{ pdata.images }}" >
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <label for="" class="required">Start Date</label><span class="text-danger">{{starterror}}</span>
-                                            <input type="date" class="form-control " id="start_date" required name="start_date" value="{{ pdata.start_date|date:'Y-m-d' }}" onchange="calculateEndDate()">
-                                        </div>
-                                        <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <label for="" class="required">End Date</label><span class="text-danger">{{enderror}}</span>
-                                            <input type="date" class="form-control " id="end_date" required name="end_date" value="{{ pdata.end_date|date:'Y-m-d' }}">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        
-                                        <div class="col-sm-2">
-                                            <button type="submit"
-                                            class="btn btn-success font-weight-bolder btn-user btn-block" name="submit"
-                                            >
-                                                Update
-                                            </button>
-                                            </div>
-                                    </div>
-                                </fieldset>
-                            </form>
 
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">View Bookings</h6>
                         </div>
-
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Package</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Number of Persons</th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+                                        {% for data in bookings %}
+                                        <tr>
+                                            <td>{{data.package_id.package_name}}</td>
+                                            <td>{{data.name}}</td>
+                                            <td>{{data.email}}</td>
+                                            <td>{{data.phone}}</td>
+                                            <td>{{data.no_of_persons}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -282,7 +232,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
+                        <span>Copyright &copy; Your Website 2020</span>
                     </div>
                 </div>
             </footer>
@@ -318,7 +268,6 @@
             </div>
         </div>
     </div>
-    
 
     <!-- Bootstrap core JavaScript-->
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>

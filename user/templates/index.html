@@ -53,7 +53,16 @@
                 </div>
                 <div class="col-lg-4 text-center text-lg-end">
                     <div class="d-inline-flex align-items-center" style="height: 45px;">
-                          <div class="dropdown">
+                        
+                        {% if request.session.name %}
+                        <div class="dropdown">
+                            <a href="#" class="dropdown-toggle text-light" data-bs-toggle="dropdown"><small><i class="fa fa-home me-2"></i> {{ request.session.name }}</small></a>
+                            <div class="dropdown-menu rounded">
+                                <a href="/logout/" class="dropdown-item"><i class="fas fa-power-off me-2"></i> Log Out</a>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="dropdown">
                             <a href="#" class="dropdown-toggle text-light" data-bs-toggle="dropdown"><small><i class="fa fa-user me-2"></i>Register</small></a>
                             <div class="dropdown-menu rounded">
                                 <a href="/user_register/" class="dropdown-item"><i class="fa fa-user me-2"></i>User</a>
@@ -62,16 +71,8 @@
                             </div>
                         </div>
                         <a href="/login/"><small class="me-3 text-light"><i class="fa fa-sign-in-alt ms-3 me-2"></i>Login</small></a>
-                        <div class="dropdown">
-                            <a href="#" class="dropdown-toggle text-light" data-bs-toggle="dropdown"><small><i class="fa fa-home me-2"></i> My Dashboard</small></a>
-                            <div class="dropdown-menu rounded">
-                                <a href="#" class="dropdown-item"><i class="fas fa-user-alt me-2"></i> My Profile</a>
-                                <a href="#" class="dropdown-item"><i class="fas fa-comment-alt me-2"></i> Inbox</a>
-                                <a href="#" class="dropdown-item"><i class="fas fa-bell me-2"></i> Notifications</a>
-                                <a href="#" class="dropdown-item"><i class="fas fa-cog me-2"></i> Account Settings</a>
-                                <a href="#" class="dropdown-item"><i class="fas fa-power-off me-2"></i> Log Out</a>
-                            </div>
-                        </div>
+                        {% endif %}
+                        
                     </div>
                 </div>
             </div>
@@ -93,7 +94,7 @@
                         <a href="/" class="nav-item nav-link active">Home</a>
                         <a href="/show_packages/" class="nav-item nav-link">Packages</a>
                     </div>
-                    <a href="" class="btn btn-primary rounded-pill py-2 px-4 ms-lg-4">Book Now</a>
+                    <a href="/booking_form/" class="btn btn-primary rounded-pill py-2 px-4 ms-lg-4">Book Now</a>
                 </div>
             </nav>
 

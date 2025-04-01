@@ -22,3 +22,20 @@ class package_table(models.Model):
 
     class Meta:
         db_table="packages"
+
+
+class booking_table(models.Model):
+    package_id = models.ForeignKey(package_table,on_delete=models.SET_DEFAULT,default=1)
+    name = models.CharField(max_length=90, default=None)
+    email = models.CharField(max_length=90, default=None)
+    phone = models.CharField(max_length=10, default=None)
+    no_of_persons = models.IntegerField()
+    price = models.FloatField()
+    payment_status = models.CharField(max_length=30)
+    user_id = models.ForeignKey(register_table, on_delete=models.SET_DEFAULT, default=1)
+    booking_status = models.CharField(max_length=30, default=None)
+    created_at=models.DateTimeField()
+    updated_at=models.DateTimeField()
+
+    class Meta:
+        db_table = "bookings"
