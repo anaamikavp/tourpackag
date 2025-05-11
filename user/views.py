@@ -6,7 +6,11 @@ from user.models import register_table
 from vendor.models import booking_table, package_table
 from datetime import datetime
 from django.utils import timezone
-
+import razorpay
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
 
 def display_index(request):
     return render(request,'index.html')
@@ -19,8 +23,10 @@ def display_packages(request):
     return render(request,'packages.html', {'pdata': package_data})
 
 def booking_form(request):
-    package_data = package_table.objects.filter(start_date__gt= timezone.now(),status='approved')
-    return render(request,'booking.html', {'pdata': package_data})
+    if request.session.has_key('userid'):
+        package_data = package_table.objects.filter(start_date__gt= timezone.now(),status='approved')
+        return render(request,'booking.html', {'pdata': package_data})
+    return redirect("/login")
 
 
 def user_registration(request):
@@ -97,34 +103,39 @@ def payment_page(request):
 
 
 def booking(request):
-    if request.method == 'POST':
-        #get data from form
-        name=request.POST.get("name")
-        email=request.POST.get("email")
-        phone=request.POST.get("phone")
-        package_id=request.POST.get("package")
-        no_of_persons = request.POST.get("no_of_persons")
 
-        package_data = package_table.objects.get(id=package_id)
-        user_id = register_table.objects.get(id=request.session['userid'])
+    if request.session.has_key('userid'):
+        if request.method == 'POST':
+            #get data from form
+            name=request.POST.get("name")
+            email=request.POST.get("email")
+            phone=request.POST.get("phone")
+            package_id=request.POST.get("package")
+            no_of_persons = request.POST.get("no_of_persons")
 
-        price = float(no_of_persons) * float(package_data.price)
+            package_data = package_table.objects.get(id=package_id)
+            user_id = register_table.objects.get(id=request.session['userid'])
 
-        booking = booking_table()
-        booking.name = name
-        booking.email = email
-        booking.phone = phone
-        booking.no_of_persons = no_of_persons
-        booking.package_id = package_data
-        booking.price = price
-        booking.payment_status = 'pending'
-        booking.created_at=datetime.now()
-        booking.updated_at=datetime.now()
-        booking.user_id = user_id
-        booking.booking_status = 'pending'
-        booking.save()
+            price = float(no_of_persons) * float(package_data.price)
 
-        return render(request,'payment.html',{'booking': booking})
+            booking = booking_table()
+            booking.name = name
+            booking.email = email
+            booking.phone = phone
+            booking.no_of_persons = no_of_persons
+            booking.package_id = package_data
+            booking.price = price
+            booking.payment_status = 'pending'
+            booking.created_at=datetime.now()
+            booking.updated_at=datetime.now()
+            booking.user_id = user_id
+            booking.booking_status = 'pending'
+            booking.save()
+            request.session['booking_id'] = booking.id
+            print("BOOKING ID: ", request.session['booking_id'])
+
+            return render(request,'payment.html',{'booking': booking, 'razorpay_key': settings.RAZORPAY_KEY_ID})
+    return redirect("/login")
 
 def transaction(request, id):
     if request.method == 'POST':
@@ -145,9 +156,33 @@ def package_readmore(request,id):
     package_data = package_table.objects.get(id=id)
     return render(request,'package_detail_view.html',{'pdata':package_data})
 
+client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+@csrf_exempt
+def create_order(request, booking_id):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        amount = data['amount']  # already in paise
+
+        order = client.order.create({
+            'amount': amount,
+            'currency': 'INR',
+            'payment_capture': '1'
+        })
+
+        return JsonResponse({'order_id': order['id']})
 
 
 
+def payment_success(request):
+    payment_id = request.GET.get('payment_id')
+    booking = booking_table.objects.get(id=request.session["booking_id"])
+    booking.transaction_id = payment_id
+    booking.payment_status = 'success'
+    booking.booking_status = 'booked'
+    booking.updated_at = datetime.now()
+    booking.save()
+    return render(request,"success.html",{'data': booking})
 
 
 

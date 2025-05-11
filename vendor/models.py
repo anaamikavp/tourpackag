@@ -32,6 +32,7 @@ class booking_table(models.Model):
     no_of_persons = models.IntegerField()
     price = models.FloatField()
     payment_status = models.CharField(max_length=30)
+    transaction_id = models.CharField(max_length=90, default="123")
     user_id = models.ForeignKey(register_table, on_delete=models.SET_DEFAULT, default=1)
     booking_status = models.CharField(max_length=30, default=None)
     created_at=models.DateTimeField()

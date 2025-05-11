@@ -16,6 +16,8 @@ urlpatterns = [
     path('payment/',views.payment_page),
     path('transaction/<int:id>',views.transaction),
     path('logout/',views.logout_view),
-    path('package_readmore/<int:id>',views.package_readmore)
+    path('package_readmore/<int:id>',views.package_readmore),
+    path('create_order/<int:booking_id>/', views.create_order, name='create_order'),
+    path('payment/success/', views.payment_success, name='payment_success'),
 
 ]

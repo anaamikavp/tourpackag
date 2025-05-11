@@ -132,3 +132,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL='/media/'  #folder to save media files(ex:img)
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 DEBUG=True
+
+RAZORPAY_KEY_ID = os.environ['RAZORPAY_KEY_ID']
+RAZORPAY_KEY_SECRET = os.environ['RAZORPAY_KEY_SECRET']

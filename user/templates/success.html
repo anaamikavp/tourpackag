@@ -116,21 +116,10 @@
             <div class="container py-5">
                 <div class="row align-items-center">
                     <div class="col-lg-6">
-                        <h1 class="text-dark mb-4">Payment</h1>
-                        <form id="razorpay-form">
-                            {% csrf_token %}
-                            <div class="form-group row">
-                                <div class="col-sm-6 mb-3 mb-sm-0">
-                                    <label for="price">Amount to be Paid</label>
-                                    <input type="text" class="form-control" id="price" value="{{ booking.price }}" name="amount"> <br>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <button class="btn btn-primary text-white w-100 py-3" type="button" onclick="payNow()">Book Now</button>
-                            </div>
-                        </div>
-                    </form>
-                        
+                        <h1 class="text-success mb-4">Booking Success</h1>
+                        <p>Package : {{data.package_id.package_name}}</p>
+                        <p>Booking ID : BKD{{data.id}}</p>
+                        <p>Transaction ID : {{data.transaction_id}}</p>
                     </div>
                         
                     </div>
@@ -252,37 +241,7 @@
         
 
 
-        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-        <script>
-            function payNow() {
-                const amount = document.getElementById("price").value * 100;  // Convert ₹ to paise
 
-                fetch("{% url 'create_order' booking.id %}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": "{{ csrf_token }}"
-                    },
-                    body: JSON.stringify({ amount: amount })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const options = {
-                        "key": "{{ razorpay_key }}",  // passed from Django context
-                        "amount": amount,
-                        "currency": "INR",
-                        "name": "Booking Payment",
-                        "order_id": data.order_id,
-                        "handler": function (response) {
-                            console.log(response); // Add this to debug
-                            window.location.href = `/payment/success/?payment_id=${response.razorpay_payment_id}`;
-                        }
-                    };
-                    const rzp = new Razorpay(options);
-                    rzp.open();
-                });
-            }
-        </script>
         <!-- JavaScript Libraries -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
